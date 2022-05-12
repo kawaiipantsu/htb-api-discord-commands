@@ -1,0 +1,16 @@
+{
+	"comment001": "=[ Discord Global Settings ]=============================",
+	"token": "xxxxxxxxxxxxxxxxxxx",
+	"clientId": "1234",
+	"guildId": "1234",
+	"comment002": "=========================================================",
+
+	"comment003": "=[ Hack The Box Settings ]===============================",
+	"apiToken": "xxxxxxxxxxxxxxxxxxxx",
+	"threadArchiveDureation": 1440,
+	"hacktheboxChannelID": "1234",
+	"announcementOrGeneralChannelID": "1234",
+	"memberRoleID": "1234",
+	"adminRoleID": "1234",
+	"comment004": "========================================================="
+}

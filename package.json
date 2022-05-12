@@ -1,0 +1,18 @@
+{
+  "name": "thugsred-htb",
+  "version": "1.0.0",
+  "description": "Bot that handles HTB commands",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/builders": "^0.13.0",
+    "@discordjs/rest": "^0.4.1",
+    "discord-api-types": "^0.32.1",
+    "discord.js": "^13.6.0",
+    "events": "^3.3.0"
+  }
+}
