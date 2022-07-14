@@ -551,15 +551,18 @@ module.exports = {
 					console.log("= THREADS =");
 					let arr = Array.from(value.values())
 					for ( const tt in arr ) {
-						console.log( "[  ACTIVE] HTB Machine Name: " + arr[tt].name )
-						var thisWriteup = {
-							"name": arr[tt].name.replace("Machine-",""),
-							"solved": arr[tt].locked,
-							"notes": arr[tt].messageCount,
-							"collaborators": arr[tt].memberCount,
-							"archived": arr[tt].archived
+						// Only do actual machines and not challenges or other junk :)
+						if ( arr[tt].name.includes("Machine-") ) {
+							console.log( "[  ACTIVE] HTB Machine Name: " + arr[tt].name )
+							var thisWriteup = {
+								"name": arr[tt].name.replace("Machine-",""),
+								"solved": arr[tt].locked,
+								"notes": arr[tt].messageCount,
+								"collaborators": arr[tt].memberCount,
+								"archived": arr[tt].archived
+							}
+							writeups.push(thisWriteup)
 						}
-						writeups.push(thisWriteup)
 					}
 				}	
 			}
@@ -568,15 +571,18 @@ module.exports = {
 					console.log("= THREADS =");
 					let arr = Array.from(value.values())
 					for ( const tt in arr ) {
-						var thisWriteup = {
-							"name": arr[tt].name.replace("Machine-",""),
-							"solved": arr[tt].locked,
-							"notes": arr[tt].messageCount,
-							"collaborators": arr[tt].memberCount,
-							"archived": arr[tt].archived
+						// Only do actual machines and not challenges or other junk :)
+						if ( arr[tt].name.includes("Machine-") ) {
+							var thisWriteup = {
+								"name": arr[tt].name.replace("Machine-",""),
+								"solved": arr[tt].locked,
+								"notes": arr[tt].messageCount,
+								"collaborators": arr[tt].memberCount,
+								"archived": arr[tt].archived
+							}
+							writeups.push(thisWriteup)
+							console.log( "[ARCHIVED] THB Machine Name: " + arr[tt].name )
 						}
-						writeups.push(thisWriteup)
-						console.log( "[ARCHIVED] THB Machine Name: " + arr[tt].name )
 					}
 				}	
 			}
@@ -595,27 +601,33 @@ module.exports = {
 				};
 				https.get(url_machine,options,(res) => {
 					let body = "";
+					let code = res.statusCode
 					res.on("data", (chunk) => {
 						body += chunk;
 					});
 					res.on("end", () => {
-						try {
-							//console.log("TEST TEST: "+thiswriteup.name)
-							//console.log(options)
-							json = JSON.parse(body);
-							var os = json.info.os.padEnd(8," ")
-							var diff = json.info.difficultyText.padEnd(11," ")
-							var fancyName = json.info.name.padEnd(20," ")
-							var solved = options.writeup.solved ? '🏆💯' : ''
-							var old = options.writeup.archived ? '⚪' : '🔵'
-							var col = options.writeup.collaborators
-							var msgnum = options.writeup.notes
-							var msg = "```yml\n🕹️ "+fancyName+" [ 🖥️ = "+os+", 🏋️ = "+diff+" ] 🧑‍💻🧑‍💻🧑‍💻 = "+col.toString().padEnd(3," ")+" 📊 = "+msgnum.toString().padEnd(3," ")+" |  "+old+"  "+solved+"```"
-							//console.log(msg)
-							interaction.channel.send(msg)
-						} catch (error) {
-							console.error(error.message);
-						};
+						//console.log("HTTP Return code: "+code)
+						if ( code == "200" ) {
+							try {
+								//console.log("TEST TEST: "+thiswriteup.name)
+								json = JSON.parse(body);
+								var os = json.info.os.padEnd(8," ")
+								var diff = json.info.difficultyText.padEnd(11," ")
+								var fancyName = json.info.name.padEnd(20," ")
+								var solved = options.writeup.solved ? '🏆💯' : ''
+								var old = options.writeup.archived ? '⚪' : '🔵'
+								var col = options.writeup.collaborators
+								var msgnum = options.writeup.notes
+								var msg = "```yml\n🕹️ "+fancyName+" [ 🖥️ = "+os+", 🏋️ = "+diff+" ] 🧑‍💻🧑‍💻🧑‍💻 = "+col.toString().padEnd(3," ")+" 📊 = "+msgnum.toString().padEnd(3," ")+" |  "+old+"  "+solved+"```"
+								//console.log(msg)
+								interaction.channel.send(msg)
+							} catch (error) {
+								console.error(error.message);
+							};
+						} else {
+							//var msg = "```yml\n"+writeup.name+" could not be fetched from HTB api, something went wrong!```"
+							//interaction.channel.send(msg)
+						}
 					});
 				}).on("error", (error) => {
 					console.error(error.message);
